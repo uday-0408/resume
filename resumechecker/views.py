@@ -56,3 +56,19 @@ class AnalyzeResumeAPI(APIView):
         except Exception as e:
             print(f"Error from AnalyzeResumeAPI: {e}")
             return Response({"data": False})
+
+
+from django.shortcuts import render
+from .models import Resume, JobDescription
+
+
+def resume_upload(request):
+    job_titles = JobDescription.objects.all()
+    success = False
+    if request.method == "POST" and request.FILES.get("resume"):
+        resume_file = request.FILES["resume"]
+        Resume.objects.create(resume=resume_file)
+        success = True
+    return render(
+        request, "resume_upload.html", {"success": success, "job_titles": job_titles}
+    )
